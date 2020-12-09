@@ -50,16 +50,6 @@ cPlugin:
         sym.name = "C_Md4"
         
 
-        
-#[
-when defined windows:
-  echo "I'm on Windows!"
-  cDefine("USE_WINDOWS_API") 
-elif defined linux:
-  echo "I'm on Linux!"
-  cDefine("WOLFSSL_PTHREADS")
-]#
-
 type  
   HANDLE {.importc: "HANDLE",
               header: "<windows.h>", final, pure.} = object
@@ -78,7 +68,7 @@ type
   tm {.importc: "tm",
               header: "<time.h>", final, pure.} = object
   will = object
-#  mp_digit = uint
+
 
 const defineValue = @[
   "WOLFSSL_LIB",
@@ -87,34 +77,15 @@ const defineValue = @[
 ]
 
 cDefine(defineValue)
-#cImport("user_settings.h")
+
 cIncludeDir(baseDir)
-cPassL(baseDir)
-#cIncludeDir(@[include_wolfssl_Dir,include_wolfcrypt_Dir])
-#cImport(include_wolfcrypt_Dir/"random.h" , recurse = true)
-#cCompile(baseDir/"wolfcrypt"/"src"/"random.c")  
 
-#cImport(include_wolfcrypt_Dir/"types.h")
-#cImport(include_wolfcrypt_Dir/"asn_public.h")
-#cImport(include_wolfcrypt_Dir/"tfm.h")
-#cImport(include_wolfcrypt_Dir/"rsa.h")
-#cImport(sslPath, recurse = true)
 const includePath = @[
-  
-#  include_wolfcrypt_Dir/"types.h",
-#  include_wolfcrypt_Dir/"asn_public.h",
-#  include_wolfcrypt_Dir/"tfm.h",
-
-  sslPath,
-#  include_wolfcrypt_Dir/"integer.h",
-  include_wolfcrypt_Dir/"rsa.h",
+sslPath,
+#  include_wolfcrypt_Dir/"rsa.h",
 ]
 cImport(includePath, recurse = true)
 
-# cImport(sslPath)
-
-# cImport("options.h") 
-# cImport("settings.h")  
 
 
 
