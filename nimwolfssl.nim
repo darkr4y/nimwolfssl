@@ -5,6 +5,7 @@ import nimterop/[build, cimport ]
 static:
   cDebug()
   cDisableCaching()                                   
+  # cSkipSymbol(@["will"])
 
 const
   baseDir = getProjectCacheDir("nimwolfssl")   
@@ -45,6 +46,9 @@ cPlugin:
         sym.name = "c_wolfSSL_free"
     if sym.name == "CERT_TYPE":
         sym.name = "C_CERT_TYPE"
+    if sym.name == "Md4":
+        sym.name = "C_Md4"
+        
 
         
 #[
@@ -56,11 +60,57 @@ elif defined linux:
   cDefine("WOLFSSL_PTHREADS")
 ]#
 
+type  
+  HANDLE {.importc: "HANDLE",
+              header: "<windows.h>", final, pure.} = object
+  CRITICAL_SECTION {.importc: "CRITICAL_SECTION",
+              header: "<windows.h>", final, pure.} = object
+  WIN32_FIND_DATAA {.importc: "WIN32_FIND_DATAA",
+              header: "<windows.h>", final, pure.} = object
+  sockaddr  {.importc: "sockaddr",
+              header: "<winsock2.h>", final, pure.} = object
+  sockaddr_storage {.importc: "sockaddr_storage",
+              header: "<winsock2.h>", final, pure.} = object
+  sockaddr_in {.importc: "sockaddr_in",
+              header: "<winsock2.h>", final, pure.} = object
+  hostent {.importc: "hostent",
+              header: "<winsock2.h>", final, pure.} = object
+  tm {.importc: "tm",
+              header: "<time.h>", final, pure.} = object
+  will = object
+#  mp_digit = uint
 
+const defineValue = @[
+  "WOLFSSL_LIB",
+  "WOLFSSL_USER_SETTINGS",
+  "CYASSL_USER_SETTINGS"
+]
 
-cImport("user_settings.h")
+cDefine(defineValue)
+#cImport("user_settings.h")
 cIncludeDir(baseDir)
-cImport(sslPath, recurse = true)
+cPassL(baseDir)
+#cIncludeDir(@[include_wolfssl_Dir,include_wolfcrypt_Dir])
+#cImport(include_wolfcrypt_Dir/"random.h" , recurse = true)
+#cCompile(baseDir/"wolfcrypt"/"src"/"random.c")  
+
+#cImport(include_wolfcrypt_Dir/"types.h")
+#cImport(include_wolfcrypt_Dir/"asn_public.h")
+#cImport(include_wolfcrypt_Dir/"tfm.h")
+#cImport(include_wolfcrypt_Dir/"rsa.h")
+#cImport(sslPath, recurse = true)
+const includePath = @[
+  
+#  include_wolfcrypt_Dir/"types.h",
+#  include_wolfcrypt_Dir/"asn_public.h",
+#  include_wolfcrypt_Dir/"tfm.h",
+
+  sslPath,
+#  include_wolfcrypt_Dir/"integer.h",
+  include_wolfcrypt_Dir/"rsa.h",
+]
+cImport(includePath, recurse = true)
+
 # cImport(sslPath)
 
 # cImport("options.h") 
