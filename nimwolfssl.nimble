@@ -16,4 +16,5 @@ var
   name = "nimwolfssl"
 
 task test, "Run tests":
+  echo "on Windows you shuold run with this: nim c -f -r --passL:-lws2_32 tests/test_" & name & ".nim"
   exec "nim c -f -r tests/test_" & name & ".nim"

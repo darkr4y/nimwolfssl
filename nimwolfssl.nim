@@ -6,6 +6,7 @@ static:
   cDebug()
   cDisableCaching()                                   
   # cSkipSymbol(@["will"])
+  cSkipSymbol(@["MP_MASK"]) 
 
 const
   baseDir = getProjectCacheDir("nimwolfssl")   
@@ -50,6 +51,7 @@ cPlugin:
         sym.name = "C_Md4"
         
 
+
 type  
   HANDLE {.importc: "HANDLE",
               header: "<windows.h>", final, pure.} = object
@@ -68,27 +70,27 @@ type
   tm {.importc: "tm",
               header: "<time.h>", final, pure.} = object
   will = object
-
+  DRBG = object
+  SOCKET_T = object
 
 const defineValue = @[
   "WOLFSSL_LIB",
   "WOLFSSL_USER_SETTINGS",
-  "CYASSL_USER_SETTINGS"
+  "CYASSL_USER_SETTINGS",
 ]
 
 cDefine(defineValue)
 
+
+cCompile(baseDir/"wolfcrypt"/"src"/"random.c")
+
 cIncludeDir(baseDir)
 
 const includePath = @[
-sslPath,
-#  include_wolfcrypt_Dir/"rsa.h",
+  include_wolfcrypt_Dir/"rsa.h",
+  sslPath,
 ]
+
+
+
 cImport(includePath, recurse = true)
-
-
-
-
-
-
-
